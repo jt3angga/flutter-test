@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:valbury_test_app/app/widgets/card-category.dart';
 import 'package:valbury_test_app/app/widgets/card-rs.dart';
 
 import '../controllers/home_controller.dart';
@@ -66,37 +67,20 @@ class HomeView extends GetView<HomeController> {
                             width: 4,
                           ),
                       itemBuilder: (context, index) => (Card(
-                            child: InkWell(
-                              onTap: () => controller
-                                  .onClickRs(controller.hospitalList[index].id),
-                              child: Container(
-                                width: 100,
-                                child: Obx(() => (
-                                  Center(
-                                    child: Text(
-                                    controller.hospitalList[index].name,
-                                    style: TextStyle(
-                                        color: controller.hospitalList[index].id == controller.selectedIndex() ? Colors.black : Colors.grey,
-                                        fontSize: 15,
-                                        fontWeight: controller.hospitalList[index].id == controller.selectedIndex() ? FontWeight.bold : FontWeight.normal
-                                    ),
-                                  ))
-                                )),
-                              ),
-                            ),
+                            child: Obx(() => (
+                              CardCategory(
+                                selected: controller.hospitalList[index].id == controller.selectedIndex(), 
+                                title: controller.hospitalList[index].name, 
+                                onTap: () => controller.onClickRs(controller.hospitalList[index].id)
+                              )
+                            ))
                           ))),
               ),
               Obx(() {
                 return (ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: controller.selectedIndex() == 'semua'
-                        ? controller.hospitalDetail.length
-                        : controller.hospitalDetail
-                            .where(
-                                (i) => i["code"] == controller.selectedIndex())
-                            .toList()
-                            .length,
+                    itemCount: controller.getHospitalByCode(controller.selectedIndex()).length,
                     separatorBuilder: (context, _) => SizedBox(
                           width: 5,
                         ),
@@ -105,13 +89,7 @@ class HomeView extends GetView<HomeController> {
                           height: 70,
                           child: CardRs(
                               index: index,
-                              obj: controller.selectedIndex() == 'semua'
-                                  ? controller.hospitalDetail[index]
-                                  : controller.hospitalDetail
-                                      .where((i) =>
-                                          i["code"] ==
-                                          controller.selectedIndex())
-                                      .toList()[index]),
+                              obj: controller.getHospitalByCode(controller.selectedIndex())[index]),
                         ))));
               }),
               Container(
@@ -151,37 +129,21 @@ class HomeView extends GetView<HomeController> {
                         ),
                     itemBuilder: (context, index) => (
                       Card(
-                          child: InkWell(
-                            onTap: () => controller.onClickKlinik(
-                                controller.kliniklList[index].id),
-                            child: Container(
-                              width: 100,
-                              child: Obx(() => (
-                                Center(
-                                  child: Text(
-                                  controller.kliniklList[index].name,
-                                  style: TextStyle(
-                                    color: controller.kliniklList[index].id == controller.selectedIndexKlinik() ? Colors.black : Colors.grey,
-                                    fontSize: 15,
-                                    fontWeight: controller.kliniklList[index].id == controller.selectedIndexKlinik() ? FontWeight.bold : FontWeight.normal
-                                  ),
-                                ))
-                              )),
-                            ),
-                          ),
+                        child: Obx(() => (
+                              CardCategory(
+                                selected: controller.kliniklList[index].id == controller.selectedIndexKlinik(), 
+                                title: controller.kliniklList[index].name,
+                                onTap: () => controller.onClickKlinik(
+                                controller.kliniklList[index].id)
+                              )
+                            )),
                         ))),
               ),
               Obx(() {
                 return (ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: controller.selectedIndexKlinik() == 'semua'
-                        ? controller.kliniklDetail.length
-                        : controller.kliniklDetail
-                            .where((i) =>
-                                i["code"] == controller.selectedIndexKlinik())
-                            .toList()
-                            .length,
+                    itemCount: controller.getKlinikByCode(controller.selectedIndexKlinik()).length,
                     separatorBuilder: (context, _) => SizedBox(
                           width: 5,
                         ),
@@ -190,13 +152,7 @@ class HomeView extends GetView<HomeController> {
                           height: 70,
                           child: CardRs(
                               index: index,
-                              obj: controller.selectedIndexKlinik() == 'semua'
-                                  ? controller.kliniklDetail[index]
-                                  : controller.kliniklDetail
-                                      .where((i) =>
-                                          i["code"] ==
-                                          controller.selectedIndexKlinik())
-                                      .toList()[index]),
+                              obj: controller.getKlinikByCode(controller.selectedIndexKlinik())[index]),
                         ))));
               })
             ],
